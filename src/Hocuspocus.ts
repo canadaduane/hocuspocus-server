@@ -382,7 +382,7 @@ export class Hocuspocus {
 
     // To override settings for specific connections, we’ll
     // keep track of a few things in the `ConnectionConfiguration`.
-    const connection: ConnectionConfiguration = {
+    const connectionConfig: ConnectionConfiguration = {
       readOnly: false,
       requiresAuthentication: this.requiresAuthentication,
       isAuthenticated: false,
@@ -396,7 +396,7 @@ export class Hocuspocus {
       requestHeaders: request.headers,
       requestParameters: Hocuspocus.getParameters(request),
       socketId,
-      connection,
+      connectionConfig,
     }
 
     // this map indicates whether a `Connection` instance has already taken over for incoming message for the key (i.e. documentName)
@@ -415,8 +415,8 @@ export class Hocuspocus {
       clearTimeout(closeIdleConnection)
 
       // If no hook interrupts, create a document and connection
-      const document = await this.createDocument(documentName, request, socketId, connection, context)
-      const instance = this.createConnection(incoming, request, document, socketId, connection.readOnly, context)
+      const document = await this.createDocument(documentName, request, socketId, connectionConfig, context)
+      const instance = this.createConnection(incoming, request, document, socketId, connectionConfig.readOnly, context)
 
       instance.onClose((document, event) => {
         delete documentConnections[documentName]
@@ -436,7 +436,7 @@ export class Hocuspocus {
         incoming.emit('message', input)
       })
 
-      this.hooks('connected', { ...hookPayload, documentName })
+      this.hooks('connected', { ...hookPayload, documentName, context, connection: instance })
     }
 
     // This listener handles authentication messages and queues everything else.
@@ -473,7 +473,7 @@ export class Hocuspocus {
           })
             .then(() => {
               // All `onAuthenticate` hooks passed.
-              connection.isAuthenticated = true
+              connectionConfig.isAuthenticated = true
 
               // Let the client know that authentication was successful.
               const message = new OutgoingMessage(documentName).writeAuthenticated()
@@ -545,7 +545,7 @@ export class Hocuspocus {
           })
             .then(() => {
               // Authentication is required, we’ll need to wait for the Authentication message.
-              if (connection.requiresAuthentication || connectionEstablishing[documentName]) {
+              if (connectionConfig.requiresAuthentication || connectionEstablishing[documentName]) {
                 return
               }
               connectionEstablishing[documentName] = true
@@ -654,7 +654,7 @@ export class Hocuspocus {
   /**
    * Create a new document by the given request
    */
-  private async createDocument(documentName: string, request: IncomingMessage, socketId: string, connection: ConnectionConfiguration, context?: any): Promise<Document> {
+  private async createDocument(documentName: string, request: IncomingMessage, socketId: string, connectionConfig: ConnectionConfiguration, context?: any): Promise<Document> {
     if (this.documents.has(documentName)) {
       const document = this.documents.get(documentName)
 
@@ -669,7 +669,7 @@ export class Hocuspocus {
     const hookPayload = {
       instance: this,
       context,
-      connection,
+      connectionConfig,
       document,
       documentName,
       socketId,

@@ -161,7 +161,7 @@ export interface onAuthenticatePayload {
   requestParameters: URLSearchParams,
   socketId: string,
   token: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration
 }
 
 export interface onConnectPayload {
@@ -171,17 +171,19 @@ export interface onConnectPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration
 }
 
 export interface connectedPayload {
+  context: any,
   documentName: string,
   instance: Hocuspocus,
   request: IncomingMessage,
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration,
+  connection: Connection
 }
 
 export interface onLoadDocumentPayload {
@@ -192,7 +194,7 @@ export interface onLoadDocumentPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration
 }
 
 export interface afterLoadDocumentPayload {
@@ -203,7 +205,7 @@ export interface afterLoadDocumentPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration
 }
 
 export interface onChangePayload {
@@ -277,7 +279,7 @@ export interface fetchPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connection: ConnectionConfiguration
+  connectionConfig: ConnectionConfiguration
 }
 
 export interface storePayload extends onStoreDocumentPayload {
