@@ -154,6 +154,8 @@ export interface onStatelessPayload {
   payload: string,
 }
 
+// @todo Change 'connection' to 'connectionConfig' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface onAuthenticatePayload {
   documentName: string,
   instance: Hocuspocus,
@@ -161,9 +163,11 @@ export interface onAuthenticatePayload {
   requestParameters: URLSearchParams,
   socketId: string,
   token: string,
-  connectionConfig: ConnectionConfiguration
+  connection: ConnectionConfiguration
 }
 
+// @todo Change 'connection' to 'connectionConfig' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface onConnectPayload {
   documentName: string,
   instance: Hocuspocus,
@@ -171,9 +175,11 @@ export interface onConnectPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connectionConfig: ConnectionConfiguration
+  connection: ConnectionConfiguration
 }
 
+// @todo Change 'connection' to 'connectionConfig', and 'connectionInstance' to 'connection' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface connectedPayload {
   context: any,
   documentName: string,
@@ -182,10 +188,12 @@ export interface connectedPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connectionConfig: ConnectionConfiguration,
-  connection: Connection
+  connection: ConnectionConfiguration,
+  connectionInstance: Connection
 }
 
+// @todo Change 'connection' to 'connectionConfig' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface onLoadDocumentPayload {
   context: any,
   document: Document,
@@ -194,9 +202,11 @@ export interface onLoadDocumentPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connectionConfig: ConnectionConfiguration
+  connection: ConnectionConfiguration
 }
 
+// @todo Change 'connection' to 'connectionConfig' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface afterLoadDocumentPayload {
   context: any,
   document: Document,
@@ -205,7 +215,7 @@ export interface afterLoadDocumentPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connectionConfig: ConnectionConfiguration
+  connection: ConnectionConfiguration
 }
 
 export interface onChangePayload {
@@ -271,6 +281,8 @@ export interface onAwarenessUpdatePayload {
 
 export type StatesArray = { clientId: number, [key: string | number]: any }[]
 
+// @todo Change 'connection' to 'connectionConfig' in next major release
+// see https://github.com/ueberdosis/hocuspocus/pull/607#issuecomment-1553559805
 export interface fetchPayload {
   context: any,
   document: Document,
@@ -279,7 +291,7 @@ export interface fetchPayload {
   requestHeaders: IncomingHttpHeaders,
   requestParameters: URLSearchParams,
   socketId: string,
-  connectionConfig: ConnectionConfiguration
+  connection: ConnectionConfiguration
 }
 
 export interface storePayload extends onStoreDocumentPayload {
