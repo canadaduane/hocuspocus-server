@@ -14,6 +14,7 @@ export declare class Document extends Doc {
         clients: Set<any>;
         connection: Connection;
     }>;
+    directConnectionsCount: number;
     name: string;
     mux: mutex;
     logger: Debugger;
@@ -51,6 +52,8 @@ export declare class Document extends Doc {
      * Remove the given connection from this document
      */
     removeConnection(connection: Connection): Document;
+    addDirectConnection(): Document;
+    removeDirectConnection(): Document;
     /**
      * Get the number of active connections for this document
      */

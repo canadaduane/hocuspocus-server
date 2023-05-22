@@ -2,9 +2,10 @@
 /// <reference types="node" />
 import { IncomingMessage, Server as HTTPServer } from 'http';
 import WebSocket, { AddressInfo, WebSocketServer } from 'ws';
-import { Configuration, HookName, HookPayload, onListenPayload } from './types';
+import { Configuration, HookName, HookPayload, onListenPayload, onStoreDocumentPayload } from './types';
 import Document from './Document';
 import { Debugger } from './Debugger';
+import { DirectConnection } from './DirectConnection';
 export declare const defaultConfiguration: {
     name: null;
     port: number;
@@ -89,6 +90,7 @@ export declare class Hocuspocus {
      * Create a new connection by the given request and document
      */
     private createConnection;
+    storeDocumentHooks(document: Document, hookPayload: onStoreDocumentPayload): void;
     /**
      * Run the given hook on all configured extensions.
      * Runs the given callback after each hook.
@@ -104,5 +106,6 @@ export declare class Hocuspocus {
     disableDebugging(): void;
     flushMessageLogs(): this;
     getMessageLogs(): any[];
+    openDirectConnection(documentName: string, context?: any): Promise<DirectConnection>;
 }
 export declare const Server: Hocuspocus;

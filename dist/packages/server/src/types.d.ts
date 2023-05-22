@@ -115,7 +115,7 @@ export interface onAuthenticatePayload {
     requestParameters: URLSearchParams;
     socketId: string;
     token: string;
-    connectionConfig: ConnectionConfiguration;
+    connection: ConnectionConfiguration;
 }
 export interface onConnectPayload {
     documentName: string;
@@ -124,7 +124,7 @@ export interface onConnectPayload {
     requestHeaders: IncomingHttpHeaders;
     requestParameters: URLSearchParams;
     socketId: string;
-    connectionConfig: ConnectionConfiguration;
+    connection: ConnectionConfiguration;
 }
 export interface connectedPayload {
     context: any;
@@ -134,8 +134,8 @@ export interface connectedPayload {
     requestHeaders: IncomingHttpHeaders;
     requestParameters: URLSearchParams;
     socketId: string;
-    connectionConfig: ConnectionConfiguration;
-    connection: Connection;
+    connection: ConnectionConfiguration;
+    connectionInstance: Connection;
 }
 export interface onLoadDocumentPayload {
     context: any;
@@ -145,7 +145,7 @@ export interface onLoadDocumentPayload {
     requestHeaders: IncomingHttpHeaders;
     requestParameters: URLSearchParams;
     socketId: string;
-    connectionConfig: ConnectionConfiguration;
+    connection: ConnectionConfiguration;
 }
 export interface afterLoadDocumentPayload {
     context: any;
@@ -155,7 +155,7 @@ export interface afterLoadDocumentPayload {
     requestHeaders: IncomingHttpHeaders;
     requestParameters: URLSearchParams;
     socketId: string;
-    connectionConfig: ConnectionConfiguration;
+    connection: ConnectionConfiguration;
 }
 export interface onChangePayload {
     clientsCount: number;
@@ -225,7 +225,7 @@ export interface fetchPayload {
     requestHeaders: IncomingHttpHeaders;
     requestParameters: URLSearchParams;
     socketId: string;
-    connectionConfig: ConnectionConfiguration;
+    connection: ConnectionConfiguration;
 }
 export interface storePayload extends onStoreDocumentPayload {
     state: Buffer;
