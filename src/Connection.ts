@@ -230,6 +230,7 @@ export class Connection {
 
     this.callbacks.beforeHandleMessage(this, data)
       .then(() => {
+        console.log('hocuspocus -- handleMessage', documentName, this.socketId)
         new MessageReceiver(
           message,
           this.logger,

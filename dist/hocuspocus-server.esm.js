@@ -2594,6 +2594,7 @@ class Connection {
         message.writeVarString(documentName);
         this.callbacks.beforeHandleMessage(this, data)
             .then(() => {
+            console.log('hocuspocus -- handleMessage', documentName, this.socketId);
             new MessageReceiver(message, this.logger).apply(this.document, this);
         })
             .catch((e) => {
@@ -3686,6 +3687,7 @@ class Hocuspocus {
         document.isLoading = false;
         await this.hooks('afterLoadDocument', hookPayload);
         document.onUpdate((document, connection, update) => {
+            console.log('hocuspocus -- onUpdate', document.name);
             this.handleDocumentUpdate(document, connection, update, connection === null || connection === void 0 ? void 0 : connection.request);
         });
         document.beforeBroadcastStateless((document, stateless) => {
