@@ -7,10 +7,13 @@ export declare class IncomingMessage {
      */
     decoder: Decoder;
     /**
-     * Access to the reply.
+     * Private encoder; can be undefined.
+     *
+     * Lazy creation of the encoder speeds up IncomingMessages that need only a decoder.
      */
-    encoder: Encoder;
+    private encoderInternal?;
     constructor(input: any);
+    get encoder(): Encoder;
     readVarUint8Array(): Uint8Array;
     readVarUint(): number;
     readVarString(): string;

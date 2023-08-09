@@ -25,7 +25,6 @@ export declare class Connection {
      */
     constructor(connection: WebSocket, request: HTTPIncomingMessage, document: Document, timeout: number, socketId: string, context: any, readOnly: boolean | undefined, logger: Debugger);
     boundClose: (event?: CloseEvent) => void;
-    boundHandleMessage: (data: Uint8Array) => void;
     boundHandlePong: () => void;
     handlePong(): void;
     /**
@@ -64,8 +63,8 @@ export declare class Connection {
     private sendCurrentAwareness;
     /**
      * Handle an incoming message
-     * @private
+     * @public
      */
-    private handleMessage;
+    handleMessage(data: Uint8Array): void;
 }
 export default Connection;

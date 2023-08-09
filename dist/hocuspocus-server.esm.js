@@ -906,8 +906,13 @@ class IncomingMessage {
         if (!(input instanceof Uint8Array)) {
             input = new Uint8Array(input);
         }
-        this.encoder = createEncoder();
         this.decoder = createDecoder(input);
+    }
+    get encoder() {
+        if (!this.encoderInternal) {
+            this.encoderInternal = createEncoder();
+        }
+        return this.encoderInternal;
     }
     readVarUint8Array() {
         return readVarUint8Array(this.decoder);
@@ -1669,7 +1674,6 @@ class Connection {
             statelessCallback: () => Promise,
         };
         this.boundClose = this.close.bind(this);
-        this.boundHandleMessage = this.handleMessage.bind(this);
         this.boundHandlePong = this.handlePong.bind(this);
         this.webSocket = connection;
         this.context = context;
@@ -1684,7 +1688,6 @@ class Connection {
         this.document.addConnection(this);
         this.pingInterval = setInterval(this.check.bind(this), this.timeout);
         this.webSocket.on('close', this.boundClose);
-        this.webSocket.on('message', this.boundHandleMessage);
         this.webSocket.on('pong', this.boundHandlePong);
         this.sendCurrentAwareness();
     }
@@ -1753,12 +1756,10 @@ class Connection {
             }
             if (this.document.hasConnection(this)) {
                 this.document.removeConnection(this);
-                clearInterval(this.pingInterval);
-                this.webSocket.removeListener('close', this.boundClose);
-                this.webSocket.removeListener('message', this.boundHandleMessage);
-                this.webSocket.removeListener('pong', this.boundHandlePong);
                 this.callbacks.onClose.forEach((callback) => callback(this.document, event));
             }
+            this.webSocket.removeListener('close', this.boundClose);
+            this.webSocket.removeListener('pong', this.boundHandlePong);
             done();
         });
     }
@@ -1799,7 +1800,7 @@ class Connection {
     }
     /**
      * Handle an incoming message
-     * @private
+     * @public
      */
     handleMessage(data) {
         const message = new IncomingMessage(data);
@@ -2189,6 +2190,7 @@ class ClientConnection {
         this.defaultContext = defaultContext;
         // this map indicates whether a `Connection` instance has already taken over for incoming message for the key (i.e. documentName)
         this.documentConnections = {};
+        this.connections = {};
         // While the connection will be establishing messages will
         // be queued and handled later.
         this.incomingMessageQueue = {};
@@ -2313,6 +2315,10 @@ class ClientConnection {
             try {
                 const tmpMsg = new IncomingMessage(data);
                 const documentName = readVarString(tmpMsg.decoder);
+                const instance = this.connections[documentName];
+                if (instance) {
+                    instance.handleMessage(data);
+                }
                 if (this.documentConnections[documentName] === true) {
                     // we already have a `Connection` set up for this document
                     return;
@@ -2395,6 +2401,7 @@ class ClientConnection {
     createConnection(connection, document) {
         const hookPayload = this.hookPayloads[document.name];
         const instance = new Connection(connection, hookPayload.request, document, this.opts.timeout, hookPayload.socketId, hookPayload.context, hookPayload.connection.readOnly, this.debuggerTool);
+        this.connections[document.name] = instance;
         instance.onClose(async (document, event) => {
             const disconnectHookPayload = {
                 instance: this.documentProvider,
@@ -2406,6 +2413,7 @@ class ClientConnection {
                 requestHeaders: hookPayload.request.headers,
                 requestParameters: getParameters(hookPayload.request),
             };
+            delete this.connections[document.name];
             await this.hooks('onDisconnect', disconnectHookPayload);
             this.callbacks.onClose.forEach((callback => callback(document, disconnectHookPayload)));
         });
