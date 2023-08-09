@@ -519,7 +519,6 @@ export class Hocuspocus {
     await this.hooks('afterLoadDocument', hookPayload)
 
     document.onUpdate((document: Document, connection: Connection, update: Uint8Array) => {
-      console.log('hocuspocus -- onUpdate', document.name)
       this.handleDocumentUpdate(document, connection, update, connection?.request)
     })
 

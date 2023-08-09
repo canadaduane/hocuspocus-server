@@ -20,6 +20,7 @@ export declare class ClientConnection {
     private readonly opts;
     private readonly defaultContext;
     private readonly documentConnections;
+    private readonly connections;
     private readonly incomingMessageQueue;
     private readonly documentConnectionsEstablished;
     private readonly hookPayloads;

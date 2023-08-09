@@ -71,15 +71,12 @@ export class Connection {
     this.pingInterval = setInterval(this.check.bind(this), this.timeout)
 
     this.webSocket.on('close', this.boundClose)
-    this.webSocket.on('message', this.boundHandleMessage)
     this.webSocket.on('pong', this.boundHandlePong)
 
     this.sendCurrentAwareness()
   }
 
   boundClose = this.close.bind(this)
-
-  boundHandleMessage = this.handleMessage.bind(this)
 
   boundHandlePong = this.handlePong.bind(this)
 
@@ -163,13 +160,11 @@ export class Connection {
 
       if (this.document.hasConnection(this)) {
         this.document.removeConnection(this)
+        this.callbacks.onClose.forEach((callback: (arg0: Document, arg1?: CloseEvent) => any) => callback(this.document, event))
       }
 
       this.webSocket.removeListener('close', this.boundClose)
-      this.webSocket.removeListener('message', this.boundHandleMessage)
       this.webSocket.removeListener('pong', this.boundHandlePong)
-
-      this.callbacks.onClose.forEach((callback: (arg0: Document, arg1?: CloseEvent) => any) => callback(this.document, event))
 
       done()
     })
@@ -218,9 +213,9 @@ export class Connection {
 
   /**
    * Handle an incoming message
-   * @private
+   * @public
    */
-  private handleMessage(data: Uint8Array): void {
+  public handleMessage(data: Uint8Array): void {
     const message = new IncomingMessage(data)
     const documentName = message.readVarString()
 
@@ -230,7 +225,6 @@ export class Connection {
 
     this.callbacks.beforeHandleMessage(this, data)
       .then(() => {
-        console.log('hocuspocus -- handleMessage', documentName, this.socketId)
         new MessageReceiver(
           message,
           this.logger,
